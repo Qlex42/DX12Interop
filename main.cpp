@@ -1,6 +1,5 @@
 // Simple example of DX12->DX11->GL interop
 
-#include <initguid.h>
 #include <d3d12.h> /* install Plateform SDK 10.0.14.393 with Visual installer and relauch CMake if this file is missing */
 #include <dxgi1_4.h>
 #include <d3dcompiler.h>
@@ -8,10 +7,9 @@
 #include <tchar.h> // for _T
 #include <d3d11on12.h>
 #include <DirectXMath.h>
-#include <vector>
 
 typedef HANDLE(WINAPI* PFNWGLDXOPENDEVICENVPROC)				(void* dxDevice);
-PFNWGLDXOPENDEVICENVPROC				wglDXOpenDeviceNV;
+PFNWGLDXOPENDEVICENVPROC				wglDXOpenDeviceNV = nullptr;
 
 typedef HRESULT(WINAPI* PFN_D3D12_CREATE_DEVICE)(
   _In_opt_ IUnknown* pAdapter,
@@ -86,16 +84,8 @@ int  WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int 
   wglMakeCurrent(nullptr, nullptr);
   wglDeleteContext(hRC);
 
-  return 0;
+  return !deviceHandle;
 }
-
-
-
-
-// DirectX12 
-#ifdef _MSC_VER
-#pragma comment(lib, "d3dcompiler") // Automatically link with d3dcompiler.lib as we are using D3DCompile() below.
-#endif
 
 inline void ThrowIfFailed(HRESULT hr)
 {
